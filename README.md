@@ -8,7 +8,7 @@ A responsive, no-framework starter built with HTML5, CSS3 and vanilla JavaScript
 - `script.js` — navigation, mobile menu, input validation, battery calculations, recent-calculation UI and the Three.js interactive 3D pack builder
 
 ## Run it
-Open index.html in a browser for general use. To use the contact form, run the site through a local development server such as VS Code Live Server; the form cannot send from a file:// page.
+Open index.html in a browser for general use. The contact form requires an HTTP or HTTPS origin and cannot send from a file:// page.
 
 ## Calculator formulas
 - Pack nominal voltage (V) = cell nominal voltage (V) × cells in series (S)
@@ -46,9 +46,9 @@ The contact form uses the EmailJS browser SDK and sends enquiries to the project
 
 1. In EmailJS, connect the Gmail service that should receive enquiries.
 2. Create an email template addressed to damexcodeyoruba@gmail.com. Use the form variables name, email, enquiryType, subject, and message. Set Reply-To to the submitted email variable so replies go to the sender.
-3. In EmailJS, allow the exact local preview origin (the current VS Code Live Server preview is http://127.0.0.1:5500) and add https://knowyourbattery.netlify.app before accepting live submissions.
+3. In EmailJS, allow https://knowyourbattery.netlify.app as an origin before accepting live submissions.
 4. The current EmailJS service ID, template ID, and public key are configured in EMAILJS_CONFIG at the top of script.js. If you change them, update those values. Never put an EmailJS private key or Gmail password in the site.
-5. Run the site through a local web server, submit a test enquiry, and confirm it arrives in Gmail. The form shows success only after EmailJS accepts the submission. If EmailJS is not configured or the service fails, the page shows a failure message and the direct email link remains available.
+5. Submit a test enquiry from the deployed site and confirm it arrives in Gmail. The form shows success only after EmailJS accepts the submission. If EmailJS is not configured or the service fails, the page shows a failure message and the direct email link remains available.
 
 EmailJS Gmail connections may be subject to Gmail sending limits and spam controls. Check the EmailJS and Gmail account settings before relying on the form for high-volume use.
 

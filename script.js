@@ -101,7 +101,6 @@ function setupThemeToggle() {
     try {
       window.localStorage.setItem("know-your-battery-theme", nextTheme);
     } catch (error) {
-      /* The theme still works for this visit when storage is unavailable. */
     }
   });
 }
