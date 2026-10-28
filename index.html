@@ -1,0 +1,1766 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Calculate battery pack voltage, capacity, and energy. Explore series and parallel configurations in the 3D Pack Builder and learn battery engineering basics."
+    />
+    <title>Know Your Battery | Calculate. Learn. Build.</title>
+    <link rel="canonical" href="https://knowyourbattery.netlify.app/" />
+    <script>
+      document.documentElement.classList.add("app-loading");
+      window.setTimeout(function () {
+        document.documentElement.classList.remove("app-loading");
+      }, 8000);
+    </script>
+    <style>
+      html.app-loading,
+      html.app-loading body {
+        overflow: hidden;
+      }
+      html.app-loading .app-shell {
+        visibility: hidden;
+      }
+      html.app-loading .app-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: grid;
+        place-items: center;
+        background: #0b1730;
+        color: #fff;
+      }
+      .app-loader__content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        text-align: center;
+      }
+      .app-loader__content img {
+        width: 84px;
+        height: 84px;
+        object-fit: contain;
+      }
+      .app-loader__content p {
+        margin: 0;
+        color: #e7eefb;
+        font:
+          700 14px Manrope,
+          Arial,
+          sans-serif;
+      }
+    </style>
+    <meta name="theme-color" content="#0B1730" />
+    <meta name="application-name" content="Know Your Battery" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Know Battery" />
+    <meta
+      property="og:title"
+      content="Know Your Battery | Calculate. Learn. Build."
+    />
+    <meta
+      property="og:description"
+      content="Calculate battery pack voltage, capacity, and energy. Explore series and parallel configurations in the 3D Pack Builder and learn battery engineering basics."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://knowyourbattery.netlify.app/" />
+    <meta property="og:site_name" content="Know Your Battery" />
+    <!-- Keep these absolute HTTPS URLs aligned with the deployed site address. -->
+    <meta
+      property="og:image"
+      content="https://knowyourbattery.netlify.app/ogimage.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1671" />
+    <meta property="og:image:height" content="941" />
+    <meta
+      property="og:image:alt"
+      content="Know Your Battery for battery calculations, engineering learning, and pack design."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Know Your Battery | Calculate. Learn. Build."
+    />
+    <meta
+      name="twitter:description"
+      content="Calculate battery pack voltage, capacity, and energy, then explore pack layouts in the 3D Pack Builder."
+    />
+    <meta
+      name="twitter:image"
+      content="https://knowyourbattery.netlify.app/ogimage.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Know Your Battery for battery calculations, engineering learning, and pack design."
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="icons/favicon-32.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="icons/apple-touch-icon.png"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"
+      defer
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+      defer
+    ></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="app-loader" id="appLoader" role="status" aria-live="polite">
+      <div class="app-loader__content">
+        <img src="logo-mark.png" alt="" width="84" height="84" />
+        <p>Loading your battery workspace…</p>
+        <span class="app-loader__spinner" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#" aria-label="Know Your Battery dashboard">
+          <img
+            class="brand-logo"
+            src="logo-mark.png"
+            alt="Know Your Battery logo"
+          />
+          <span class="brand-copy"
+            ><strong>Know Your Battery</strong
+            ><small>ENGINEERING TOOLKIT</small></span
+          >
+        </a>
+
+        <p class="nav-label">WORKSPACE</p>
+        <nav class="nav-list">
+          <a class="nav-link active" href="#dashboard" data-page="dashboard"
+            ><span class="nav-icon">▦</span>Dashboard</a
+          >
+          <a class="nav-link" href="#calculator" data-page="calculator"
+            ><span class="nav-icon">⌁</span>Battery Calculator</a
+          >
+          <a class="nav-link" href="#builder" data-page="builder"
+            ><span class="nav-icon">⬡</span>3D Pack Builder
+            <span class="new-tag">NEW</span></a
+          >
+          <a class="nav-link" href="#performance" data-page="performance"
+            ><span class="nav-icon">◷</span>Performance Tools
+            <span class="soon">SOON</span></a
+          >
+          <a class="nav-link" href="#library" data-page="library"
+            ><span class="nav-icon">▤</span>Battery Library
+            <span class="soon">SOON</span></a
+          >
+          <a class="nav-link" href="#finder" data-page="finder"
+            ><span class="nav-icon">⌕</span>Find My Battery
+            <span class="soon">SOON</span></a
+          >
+          <a class="nav-link" href="#compare" data-page="compare"
+            ><span class="nav-icon">⇄</span>Compare Batteries
+            <span class="soon">SOON</span></a
+          >
+        </nav>
+
+        <p class="nav-label second-label">YOUR WORK</p>
+        <nav class="nav-list">
+          <a class="nav-link" href="#projects" data-page="projects"
+            ><span class="nav-icon">▣</span>My Projects & Reports
+            <span class="soon">SOON</span></a
+          >
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="help-card">
+            <span class="help-symbol">i</span>
+            <strong>Engineering note</strong>
+            <p>
+              Use calculations as estimates. Always verify a real battery design
+              against its datasheet and safety requirements.
+            </p>
+          </div>
+          <div class="sidebar-footer">
+            <span class="status-dot"></span> Tools for better battery decisions
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button
+            class="menu-toggle"
+            id="menuToggle"
+            aria-label="Open navigation"
+            aria-expanded="false"
+            aria-controls="sidebar"
+          >
+            ☰
+          </button>
+          <div class="breadcrumb">
+            <span>Workspace</span><span class="crumb-separator">/</span
+            ><strong id="currentSection" aria-live="polite">Dashboard</strong>
+          </div>
+          <div class="topbar-right">
+            <span
+              class="online-indicator"
+              role="status"
+              aria-live="polite"
+              aria-label="Checking network connection"
+              title="Checking network connection"
+            ></span>
+            <span>Engineering toolkit</span>
+            <div class="avatar">
+              <img src="logo-mark.png" alt="Know Your Battery logo" />
+              <button
+                class="theme-toggle"
+                id="themeToggle"
+                type="button"
+                aria-label="Toggle dark theme"
+                title="Switch to dark theme"
+                aria-pressed="false"
+              >
+                <i
+                  class="theme-icon fas fa-moon moon-icon"
+                  aria-hidden="true"
+                ></i>
+                <i
+                  class="theme-icon fas fa-sun sun-icon"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <section
+          class="page active-page"
+          id="dashboardPage"
+          data-page-content="dashboard"
+        >
+          <div class="welcome-row">
+            <div>
+              <p class="eyebrow">BATTERY KNOWLEDGE, MADE PRACTICAL</p>
+              <h1>Good morning, engineer <span class="wave">✳</span></h1>
+              <p class="muted lead">
+                Calculate smarter. Understand your options. Build with
+                confidence.
+              </p>
+            </div>
+            <button class="primary-button" id="dashboardCalcButton">
+              <span>＋</span> New calculation
+            </button>
+          </div>
+
+          <div class="hero-panel">
+            <div class="hero-copy">
+              <span class="hero-tag"
+                ><span class="status-dot"></span> YOUR BATTERY WORKSPACE</span
+              >
+              <h2>
+                Turn battery specs into<br /><span
+                  >better project decisions.</span
+                >
+              </h2>
+              <p>
+                Explore pack configurations, estimate electrical performance,
+                and build a stronger understanding of battery technologies.
+              </p>
+              <button class="hero-button" id="heroCalcButton">
+                Open battery calculator <span>→</span>
+              </button>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+              <div class="orbit orbit-one"></div>
+              <div class="orbit orbit-two"></div>
+              <div class="battery-illustration">
+                <div class="battery-cap"></div>
+                <div class="battery-body">
+                  <div class="battery-line"></div>
+                  <div class="battery-line"></div>
+                  <div class="battery-line"></div>
+                  <div class="battery-plus">+</div>
+                </div>
+              </div>
+              <div class="art-chip chip-top">V <strong>Voltage</strong></div>
+              <div class="art-chip chip-bottom">
+                Ah <strong>Capacity</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-heading">
+            <div>
+              <h2>Quick tools</h2>
+              <p>Start with the task you need to solve.</p>
+            </div>
+            <span class="section-note">MORE TOOLS COMING SOON</span>
+          </div>
+          <div class="quick-grid">
+            <button class="tool-card" data-open="calculator">
+              <span class="tool-icon blue-icon">⌁</span
+              ><span class="tool-title">Battery pack calculator</span
+              ><span class="tool-description"
+                >Combine cells in series and parallel.</span
+              ><span class="tool-arrow">↗</span>
+            </button>
+            <button class="tool-card" data-open="performance">
+              <span class="tool-icon green-icon">◷</span
+              ><span class="tool-title">Runtime & performance</span
+              ><span class="tool-status">Coming soon</span
+              ><span class="tool-description"
+                >Estimate runtime, current and energy.</span
+              ><span class="tool-arrow">↗</span>
+            </button>
+            <button class="tool-card" data-open="library">
+              <span class="tool-icon purple-icon">▤</span
+              ><span class="tool-title">Battery library</span
+              ><span class="tool-status">Coming soon</span
+              ><span class="tool-description"
+                >Learn about common battery chemistries.</span
+              ><span class="tool-arrow">↗</span>
+            </button>
+            <button class="tool-card" data-open="finder">
+              <span class="tool-icon orange-icon">⌕</span
+              ><span class="tool-title">Find my battery</span
+              ><span class="tool-status">Coming soon</span
+              ><span class="tool-description"
+                >Match battery options to your project.</span
+              ><span class="tool-arrow">↗</span>
+            </button>
+          </div>
+
+          <div class="lower-grid">
+            <div class="content-card recent-card">
+              <div class="card-heading">
+                <div>
+                  <h3>Recent calculations</h3>
+                  <p>Your latest results, saved on this device.</p>
+                </div>
+                <span class="tiny-pill">SAVED ON THIS DEVICE</span>
+              </div>
+              <div
+                id="recentCalculations"
+                class="empty-state"
+                aria-live="polite"
+                aria-label="Saved recent battery calculations"
+              >
+                <span class="empty-icon">⌁</span
+                ><strong>No calculations yet</strong>
+                <p>
+                  Your battery calculations will appear here after you run one.
+                </p>
+                <button class="text-button" id="firstCalcButton">
+                  Create your first calculation →
+                </button>
+              </div>
+            </div>
+            <div class="content-card highlight-card">
+              <div class="card-heading">
+                <div>
+                  <h3>Battery highlight</h3>
+                  <p>A quick technical reminder</p>
+                </div>
+                <span class="highlight-icon">✦</span>
+              </div>
+              <div class="highlight-content">
+                <span class="chemistry-label">LITHIUM-ION</span>
+                <h4>Energy-dense and widely used</h4>
+                <p>
+                  Lithium-ion cells are common in portable electronics, power
+                  tools and electric vehicles. Their exact voltage limits and
+                  safe charging method depend on the cell chemistry.
+                </p>
+                <div class="highlight-footer">
+                  <span>Remember: chemistry matters</span><span>↗</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="page-footer">
+            <span
+              >Know Your Battery <span class="footer-dot">•</span> Initial
+              release</span
+            ><span>Built for learning and engineering exploration</span>
+          </footer>
+        </section>
+
+        <section
+          class="page"
+          id="calculatorPage"
+          data-page-content="calculator"
+        >
+          <div class="page-intro">
+            <p class="eyebrow">BATTERY DESIGN TOOL</p>
+            <h1>Battery pack calculator</h1>
+            <p class="muted lead">
+              Explore how series and parallel connections affect your pack's
+              electrical specifications.
+            </p>
+          </div>
+          <div class="calculator-layout">
+            <form
+              class="content-card calculator-form"
+              id="batteryForm"
+              novalidate
+            >
+              <div class="card-heading">
+                <div>
+                  <h3>Cell & configuration</h3>
+                  <p>Enter values from your cell datasheet.</p>
+                </div>
+                <span class="step-number">01</span>
+              </div>
+              <div class="field-grid">
+                <div class="field-group">
+                  <label for="cellVoltage"
+                    >Nominal cell voltage <span class="unit">(V)</span></label
+                  ><input
+                    type="number"
+                    id="cellVoltage"
+                    min="0.01"
+                    max="1000"
+                    step="any"
+                    value="3.6"
+                    required
+                  /><small>Example: Li-ion often 3.6–3.7 V nominal.</small>
+                </div>
+                <div class="field-group">
+                  <label for="cellCapacity"
+                    >Cell capacity <span class="unit">(Ah)</span></label
+                  ><input
+                    type="number"
+                    id="cellCapacity"
+                    min="0.01"
+                    max="10000"
+                    step="any"
+                    value="2.5"
+                    required
+                  /><small>Use the rated capacity for one cell.</small>
+                </div>
+                <div class="field-group">
+                  <label for="seriesCount"
+                    >Cells in series <span class="unit">(S)</span></label
+                  ><input
+                    type="number"
+                    id="seriesCount"
+                    min="1"
+                    max="1000"
+                    step="1"
+                    value="4"
+                    required
+                  /><small>Series increases pack voltage.</small>
+                </div>
+                <div class="field-group">
+                  <label for="parallelCount"
+                    >Cells in parallel <span class="unit">(P)</span></label
+                  ><input
+                    type="number"
+                    id="parallelCount"
+                    min="1"
+                    max="1000"
+                    step="1"
+                    value="3"
+                    required
+                  /><small>Parallel increases pack capacity.</small>
+                </div>
+                <div class="field-group full-field">
+                  <label for="cellChemistry"
+                    >Cell chemistry
+                    <span class="optional">(optional reference)</span></label
+                  ><select id="cellChemistry">
+                    <option value="Lithium-ion">Lithium-ion (NMC/NCA)</option>
+                    <option value="LiFePO4">
+                      Lithium iron phosphate (LiFePO₄)
+                    </option>
+                    <option value="Lead-acid">Lead-acid</option>
+                    <option value="NiMH">Nickel-metal hydride (NiMH)</option>
+                    <option value="Other">Other / not specified</option>
+                  </select>
+                </div>
+              </div>
+              <div class="formula-note">
+                <span class="formula-icon">ƒx</span>
+                <div>
+                  <strong>How the calculation works</strong>
+                  <p>
+                    Series adds voltage. Parallel adds capacity. This assumes
+                    identical, properly matched cells and does not account for
+                    losses or ageing.
+                  </p>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="primary-button" type="submit">
+                  Calculate battery pack <span>→</span></button
+                ><button class="secondary-button" type="reset" id="resetButton">
+                  Reset values
+                </button>
+              </div>
+              <p
+                class="form-error"
+                id="formError"
+                role="alert"
+                aria-live="polite"
+              ></p>
+            </form>
+            <aside class="results-column">
+              <div class="results-card">
+                <div class="results-top">
+                  <div>
+                    <span class="result-kicker">ESTIMATED PACK RESULTS</span>
+                    <h3>Your configuration</h3>
+                  </div>
+                  <span class="result-check">✓</span>
+                </div>
+                <div class="configuration-badge" id="configurationBadge">
+                  4S3P <span>•</span> 12 cells
+                </div>
+                <div class="primary-result">
+                  <span>Nominal pack voltage</span>
+                  <div>
+                    <strong id="resultVoltage">14.4</strong><small>V</small>
+                  </div>
+                  <p>Cell voltage × series count</p>
+                </div>
+                <div class="result-metrics">
+                  <div class="metric-box">
+                    <span>Total capacity</span
+                    ><strong
+                      ><span id="resultCapacity">7.5</span>
+                      <small>Ah</small></strong
+                    >
+                    <p>Cell Ah × parallel count</p>
+                  </div>
+                  <div class="metric-box">
+                    <span>Energy</span
+                    ><strong
+                      ><span id="resultEnergy">108</span>
+                      <small>Wh</small></strong
+                    >
+                    <p>Pack V × pack Ah</p>
+                  </div>
+                  <div class="metric-box">
+                    <span>Total cells</span><strong id="resultCells">12</strong>
+                    <p>Series × parallel</p>
+                  </div>
+                  <div class="metric-box">
+                    <span>Nominal cell voltage</span
+                    ><strong id="resultCellSpec">3.6 V</strong>
+                    <p>Single-cell reference</p>
+                  </div>
+                </div>
+                <button class="save-button" id="saveCalculation" type="button">
+                  ＋ Save to recent calculations
+                </button>
+                <p
+                  class="save-feedback"
+                  id="saveFeedback"
+                  aria-live="polite"
+                ></p>
+              </div>
+              <div class="safety-card">
+                <span class="safety-icon">!</span>
+                <div>
+                  <strong>Safety & design reminder</strong>
+                  <p>
+                    These are nominal estimates, not a certified design. Verify
+                    maximum/minimum voltages, current limits, BMS requirements,
+                    fusing, wiring, temperature, cell matching and charging
+                    specifications before building a pack.
+                  </p>
+                  <a
+                    href="#disclaimer"
+                    data-page="disclaimer"
+                    class="inline-link"
+                    >Read the Engineering Disclaimer →</a
+                  >
+                </div>
+              </div>
+            </aside>
+          </div>
+          <div class="content-card formula-reference">
+            <h3>Formula reference</h3>
+            <div class="formula-grid">
+              <div><span>Pack voltage</span><code>Vpack = Vcell × S</code></div>
+              <div>
+                <span>Pack capacity</span><code>Ahpack = Ahcell × P</code>
+              </div>
+              <div><span>Total cell count</span><code>N = S × P</code></div>
+              <div>
+                <span>Nominal energy</span><code>Wh = Vpack × Ahpack</code>
+              </div>
+            </div>
+          </div>
+          <footer class="page-footer">
+            <span
+              >Know Your Battery
+              <span class="footer-dot">•</span> Calculator</span
+            ><span>Always validate against manufacturer datasheets</span>
+          </footer>
+        </section>
+
+        <section class="page" data-page-content="builder">
+          <div class="page-intro">
+            <p class="eyebrow">INTERACTIVE BATTERY DESIGN</p>
+            <h1>3D battery pack builder</h1>
+            <p class="muted lead">
+              Change the cell count and connection type to explore how a battery
+              pack is configured.
+            </p>
+          </div>
+          <div class="builder-layout">
+            <div class="content-card builder-controls">
+              <div class="card-heading">
+                <div>
+                  <h3>Pack configuration</h3>
+                  <p>
+                    Use matching cells with specifications from their datasheet.
+                  </p>
+                </div>
+                <span class="step-number">01</span>
+              </div>
+              <div class="field-grid builder-fields">
+                <div class="field-group">
+                  <label for="builderCellVoltage"
+                    >Cell nominal voltage <span class="unit">(V)</span></label
+                  ><input
+                    id="builderCellVoltage"
+                    type="number"
+                    min="0.01"
+                    max="1000"
+                    step="any"
+                    value="3.7"
+                  />
+                </div>
+                <div class="field-group">
+                  <label for="builderCellCapacity"
+                    >Cell capacity <span class="unit">(Ah)</span></label
+                  ><input
+                    id="builderCellCapacity"
+                    type="number"
+                    min="0.01"
+                    max="10000"
+                    step="any"
+                    value="2.5"
+                  />
+                </div>
+                <div class="field-group">
+                  <label for="builderSeries"
+                    >Series groups <span class="unit">(S)</span></label
+                  ><input
+                    id="builderSeries"
+                    type="number"
+                    min="1"
+                    max="12"
+                    step="1"
+                    value="3"
+                  />
+                </div>
+                <div class="field-group">
+                  <label for="builderParallel"
+                    >Parallel cells per group
+                    <span class="unit">(P)</span></label
+                  ><input
+                    id="builderParallel"
+                    type="number"
+                    min="1"
+                    max="8"
+                    step="1"
+                    value="1"
+                  />
+                </div>
+                <div class="field-group full-field">
+                  <label for="builderCurrent"
+                    >Load current <span class="unit">(A)</span></label
+                  ><input
+                    id="builderCurrent"
+                    type="number"
+                    min="0"
+                    max="10000"
+                    step="any"
+                    value="2"
+                  /><small
+                    >Used to estimate nominal power: watts = pack volts × load
+                    amps.</small
+                  >
+                </div>
+              </div>
+              <div class="builder-actions">
+                <button class="primary-button" id="updateBuilder" type="button">
+                  Update 3D pack <span>↗</span>
+                </button>
+                <button
+                  class="secondary-button"
+                  id="rotateBuilder"
+                  type="button"
+                >
+                  ⟳ Rotate view
+                </button>
+              </div>
+              <p
+                class="form-error"
+                id="builderError"
+                role="alert"
+                aria-live="polite"
+              ></p>
+              <div class="formula-note">
+                <span class="formula-icon">ƒx</span>
+                <div>
+                  <strong>Connection logic</strong>
+                  <p>
+                    Series adds voltage. Parallel adds amp-hour capacity. The 3D
+                    view is a learning illustration, not a construction-ready
+                    wiring diagram.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="builder-visual-column">
+              <div class="builder-visual-card">
+                <div class="visual-card-top">
+                  <div>
+                    <span class="result-kicker">LIVE 3D PREVIEW</span>
+                    <h3 id="builderVisualTitle">3S1P · 3 cells</h3>
+                  </div>
+                  <span class="live-pill"><i></i> LIVE</span>
+                </div>
+                <div
+                  class="scene-wrap three-scene-wrap"
+                  id="batteryScene"
+                  aria-label="Interactive 3D battery pack. Drag to rotate and scroll to zoom"
+                >
+                  <canvas id="batteryCanvas"></canvas>
+                  <div class="scene-terminal-label positive-label">
+                    + POSITIVE
+                  </div>
+                  <div class="scene-terminal-label negative-label">
+                    − NEGATIVE
+                  </div>
+                  <div class="scene-hint">DRAG TO ROTATE · SCROLL TO ZOOM</div>
+                  <div class="scene-fallback" id="sceneFallback">
+                    Loading interactive 3D scene…
+                  </div>
+                </div>
+                <div class="scene-legend">
+                  <span
+                    ><i class="legend-dot red-dot"></i>Positive terminal</span
+                  ><span
+                    ><i class="legend-dot blue-dot"></i>Negative terminal</span
+                  ><span><i class="legend-line"></i>Series link</span
+                  ><span
+                    ><i class="legend-line parallel-line"></i>Parallel
+                    link</span
+                  >
+                </div>
+                <div class="visual-controls">
+                  <label for="viewAngle">Rotate view</label
+                  ><input
+                    id="viewAngle"
+                    type="range"
+                    min="-25"
+                    max="25"
+                    value="0"
+                    step="1"
+                  /><span id="viewAngleValue">0°</span>
+                </div>
+              </div>
+              <div class="builder-results-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>Electrical output</h3>
+                    <p>Nominal estimates from your selected configuration</p>
+                  </div>
+                </div>
+                <div class="builder-stat-grid">
+                  <div class="builder-stat primary-stat">
+                    <span>Pack voltage</span
+                    ><strong id="builderVoltage">11.1 <small>V</small></strong>
+                  </div>
+                  <div class="builder-stat">
+                    <span>Capacity</span
+                    ><strong id="builderCapacity">2.5 <small>Ah</small></strong>
+                  </div>
+                  <div class="builder-stat">
+                    <span>Energy</span
+                    ><strong id="builderEnergy">27.75 <small>Wh</small></strong>
+                  </div>
+                  <div class="builder-stat">
+                    <span>Nominal power at load</span
+                    ><strong id="builderPower">22.2 <small>W</small></strong>
+                  </div>
+                  <div class="builder-stat">
+                    <span>Total cells</span
+                    ><strong id="builderTotalCells">3</strong>
+                  </div>
+                  <div class="builder-stat">
+                    <span>Pack layout</span
+                    ><strong id="builderLayout">3S1P</strong>
+                  </div>
+                </div>
+                <p class="builder-assumption" id="builderPowerNote">
+                  Power estimate assumes nominal pack voltage and ignores
+                  losses.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="safety-card builder-safety">
+            <span class="safety-icon">!</span>
+            <div>
+              <strong>Before building a real pack</strong>
+              <p>
+                Check cell chemistry and matching, polarity, maximum and minimum
+                voltages, current limits, BMS compatibility, fusing, wire
+                sizing, insulation and thermal behavior. A 3D preview does not
+                verify electrical or mechanical safety.
+              </p>
+              <a href="#disclaimer" data-page="disclaimer" class="inline-link"
+                >Read the Engineering Disclaimer →</a
+              >
+            </div>
+          </div>
+          <footer class="page-footer">
+            <span
+              >Know Your Battery <span class="footer-dot">•</span> 3D Pack
+              Builder</span
+            ><span>Illustrative model · not a certified wiring plan</span>
+          </footer>
+        </section>
+
+        <section class="page placeholder-page" data-page-content="performance">
+          <div class="placeholder-icon">◷</div>
+          <p class="eyebrow">COMING NEXT</p>
+          <h1>Performance calculators</h1>
+          <p class="muted lead">
+            Runtime, load current, charging time, usable energy and efficiency
+            estimates will be added in the next build.
+          </p>
+          <button class="primary-button" data-open="calculator">
+            Use battery calculator <span>→</span>
+          </button>
+        </section>
+        <section class="page placeholder-page" data-page-content="library">
+          <div class="placeholder-icon">▤</div>
+          <p class="eyebrow">COMING NEXT</p>
+          <h1>Battery library</h1>
+          <p class="muted lead">
+            A structured guide to chemistry, nominal voltage, energy density,
+            cycle life, applications and safety considerations.
+          </p>
+          <button class="primary-button" data-open="calculator">
+            Try the calculator <span>→</span>
+          </button>
+        </section>
+        <section class="page placeholder-page" data-page-content="finder">
+          <div class="placeholder-icon">⌕</div>
+          <p class="eyebrow">COMING NEXT</p>
+          <h1>Find my battery</h1>
+          <p class="muted lead">
+            A guided tool to narrow down battery options based on voltage, load,
+            runtime, size, environment and budget.
+          </p>
+          <button class="primary-button" data-open="calculator">
+            Try the calculator <span>→</span>
+          </button>
+        </section>
+        <section class="page placeholder-page" data-page-content="compare">
+          <div class="placeholder-icon">⇄</div>
+          <p class="eyebrow">COMING NEXT</p>
+          <h1>Compare batteries</h1>
+          <p class="muted lead">
+            Compare battery chemistries and cells side by side using consistent
+            technical properties and clear assumptions.
+          </p>
+          <button class="primary-button" data-open="library">
+            Explore battery library <span>→</span>
+          </button>
+        </section>
+        <section class="page placeholder-page" data-page-content="projects">
+          <div class="placeholder-icon">▣</div>
+          <p class="eyebrow">COMING NEXT</p>
+          <h1>My projects & reports</h1>
+          <p class="muted lead">
+            Save project configurations and prepare printable summaries for your
+            engineering notes.
+          </p>
+          <button class="primary-button" data-open="calculator">
+            Create a calculation <span>→</span>
+          </button>
+        </section>
+        <section class="page info-page" data-page-content="about">
+          <div class="page-intro">
+            <p class="eyebrow">ABOUT THIS PROJECT</p>
+            <h1>About Know Your Battery</h1>
+            <p class="muted lead">Calculate. Learn. Build.</p>
+          </div>
+          <div class="content-card about-hero">
+            <span class="hero-tag">KNOW YOUR BATTERY</span>
+            <h2>Understand battery specifications and explore pack designs.</h2>
+            <p>
+              Know Your Battery helps people work through battery
+              specifications, calculate simple series and parallel
+              configurations, and explore an illustrative battery-pack design.
+            </p>
+          </div>
+          <section class="info-section" aria-labelledby="missionHeading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">OUR MISSION</p>
+                <h2 id="missionHeading">
+                  Make battery engineering easier to understand
+                </h2>
+              </div>
+            </div>
+            <div class="content-card info-copy">
+              <p>
+                Our goal is to make battery engineering more accessible through
+                understandable calculations, visual design tools, and
+                educational resources. The current project is an early toolkit:
+                it provides basic nominal-value calculations and a 3D pack
+                illustration, while several planned learning and selection tools
+                are still being developed.
+              </p>
+            </div>
+          </section>
+          <section class="info-section" aria-labelledby="featuresHeading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">WHAT YOU CAN DO</p>
+                <h2 id="featuresHeading">What’s available and coming soon</h2>
+              </div>
+              <p class="section-note">Check the workspace</p>
+            </div>
+            <div class="info-grid feature-grid">
+              <article class="content-card info-card">
+                <span class="feature-status is-available">Available</span>
+                <h3>Dashboard</h3>
+                <p>
+                  Open your workspace overview, quick links, recent
+                  calculations, and battery highlight.
+                </p>
+              </article>
+              <article class="content-card info-card">
+                <span class="feature-status is-available">Available</span>
+                <h3>Battery Calculator</h3>
+                <p>
+                  Calculate nominal pack voltage, capacity, cell count, and
+                  energy from cell specifications and series/parallel counts.
+                </p>
+              </article>
+              <article class="content-card info-card">
+                <span class="feature-status is-available">Available</span>
+                <h3>3D Pack Builder</h3>
+                <p>
+                  Explore a 3D pack configuration and nominal estimates. The
+                  scene is illustrative, not a validated wiring plan.
+                </p>
+              </article>
+              <article class="content-card info-card">
+                <span class="feature-status is-planned">SOON</span>
+                <h3>Performance Tools</h3>
+                <p>
+                  Runtime, load current, charge time, usable energy, and
+                  efficiency estimates are planned.
+                </p>
+              </article>
+              <article class="content-card info-card">
+                <span class="feature-status is-planned">SOON</span>
+                <h3>Battery Library</h3>
+                <p>
+                  A structured guide to battery chemistry, voltage, energy
+                  density, cycle life, applications, and safety considerations
+                  is planned.
+                </p>
+              </article>
+              <article class="content-card info-card">
+                <span class="feature-status is-planned">SOON</span>
+                <h3>Find My Battery</h3>
+                <p>
+                  A guided tool for narrowing battery options by voltage, load,
+                  runtime, size, environment, and budget is planned.
+                </p>
+              </article>
+              <article class="content-card info-card">
+                <span class="feature-status is-planned">SOON</span>
+                <h3>Compare Batteries</h3>
+                <p>
+                  Side-by-side comparisons of battery chemistries and cells are
+                  planned.
+                </p>
+              </article>
+              <article class="content-card info-card">
+                <span class="feature-status is-planned">SOON</span>
+                <h3>My Projects &amp; Reports</h3>
+                <p>
+                  Saving project configurations and preparing printable
+                  summaries is planned.
+                </p>
+              </article>
+            </div>
+          </section>
+          <section class="info-section" aria-labelledby="audienceHeading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">WHO IT IS FOR</p>
+                <h2 id="audienceHeading">
+                  A practical starting point for battery projects
+                </h2>
+              </div>
+            </div>
+            <div class="content-card info-copy">
+              <p>
+                The toolkit may be useful to engineering students, electrical
+                and electronics engineers, robotics and electronics makers,
+                solar and energy-storage learners, and battery enthusiasts who
+                want to understand basic pack relationships.
+              </p>
+            </div>
+          </section>
+          <section class="info-section" aria-labelledby="approachHeading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">OUR APPROACH TO ENGINEERING</p>
+                <h2 id="approachHeading">
+                  Show assumptions. Treat unknowns as unknown.
+                </h2>
+              </div>
+            </div>
+            <div class="content-card info-copy">
+              <p>
+                Calculations should make their formulas, assumptions, data
+                sources, and limitations clear. The current tools use values
+                supplied by the user and nominal specifications; they do not
+                verify those values against manufacturer records. Missing
+                specifications must not be treated as verified values, and a
+                calculated result does not establish that a design is safe to
+                build.
+              </p>
+              <a href="#disclaimer" data-page="disclaimer" class="inline-link"
+                >Read the Engineering Disclaimer →</a
+              >
+            </div>
+          </section>
+          <section
+            class="info-section about-actions"
+            aria-labelledby="exploreHeading"
+          >
+            <article
+              class="content-card developer-card"
+              aria-labelledby="developerHeading"
+            >
+              <div class="developer-avatar">
+                <img
+                  src="assets/developer-avatar.png"
+                  alt="Portrait of Okunlola Damilola"
+                  loading="lazy"
+                />
+              </div>
+              <div class="developer-copy">
+                <p class="eyebrow">THE DEVELOPER</p>
+                <h2 id="developerHeading">Hello, I’m Okunlola Damilola</h2>
+                <p>
+                  I’m a developer from Nigeria building Know Your Battery to
+                  help people calculate, learn, and explore battery engineering.
+                </p>
+                <div class="developer-links-row">
+                  <div class="developer-contact-links">
+                    <a
+                      class="developer-email"
+                      href="mailto:damexcodeyoruba@gmail.com"
+                    >
+                      <i class="fas fa-envelope" aria-hidden="true"></i>
+                      <span>Contact the developer</span>
+                    </a>
+                    <a
+                      class="developer-email"
+                      href="https://dcyportfolio.netlify.app"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Visit the developer’s portfolio website"
+                    >
+                      <i class="fas fa-globe" aria-hidden="true"></i>
+                      <span>Portfolio website</span>
+                    </a>
+                  </div>
+                  <nav
+                    class="developer-socials"
+                    aria-label="Developer social profiles"
+                  >
+                    <a
+                      href="https://www.linkedin.com/in/dc-y-1930b4281"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="LinkedIn profile"
+                      title="LinkedIn"
+                    >
+                      <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+                    </a>
+                    <a
+                      href="https://x.com/DCode_Y"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="X profile"
+                      title="X"
+                    >
+                      <i class="fab fa-twitter" aria-hidden="true"></i>
+                    </a>
+                    <a
+                      href="https://www.tiktok.com/@dc_youtube1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="TikTok profile"
+                      title="TikTok"
+                    >
+                      <i class="fab fa-tiktok" aria-hidden="true"></i>
+                    </a>
+                    <a
+                      href="https://www.youtube.com/@DC_YouTube2001"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="YouTube channel"
+                      title="YouTube"
+                    >
+                      <i class="fab fa-youtube" aria-hidden="true"></i>
+                    </a>
+                    <a
+                      href="https://github.com/Damex-web"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="GitHub profile"
+                      title="GitHub"
+                    >
+                      <i class="fab fa-github" aria-hidden="true"></i>
+                    </a>
+                  </nav>
+                </div>
+              </div>
+            </article>
+            <div class="content-card action-card">
+              <div>
+                <p class="eyebrow">GET STARTED</p>
+                <h2 id="exploreHeading">Explore the battery workspace</h2>
+                <p class="muted">
+                  Open an available tool or view the current library status.
+                </p>
+              </div>
+              <div class="action-row">
+                <button
+                  class="primary-button"
+                  type="button"
+                  data-open="calculator"
+                >
+                  Explore Calculators <span>→</span></button
+                ><button
+                  class="secondary-button"
+                  type="button"
+                  data-open="builder"
+                >
+                  Open Battery Lab</button
+                ><button
+                  class="secondary-button"
+                  type="button"
+                  data-open="library"
+                >
+                  Explore the Cell Library
+                </button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="page info-page" data-page-content="contact">
+          <div class="page-intro">
+            <p class="eyebrow">CONTACT</p>
+            <h1>Get in touch</h1>
+            <p class="muted lead">
+              Send a question, report an issue, or share feedback about Know
+              Your Battery.
+            </p>
+          </div>
+          <div class="contact-layout">
+            <form
+              class="content-card contact-form"
+              id="contactForm"
+              name="contact"
+              novalidate
+            >
+              <div class="card-heading">
+                <div>
+                  <h3>Send an enquiry</h3>
+                  <p>Fields marked required must be completed.</p>
+                </div>
+                <span class="step-number">01</span>
+              </div>
+              <div class="field-grid contact-fields">
+                <div class="field-group">
+                  <label for="contactName"
+                    >Full name <span class="required-mark">*</span></label
+                  ><input
+                    id="contactName"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    required
+                    aria-describedby="contactNameError"
+                  /><small class="field-error" id="contactNameError"></small>
+                </div>
+                <div class="field-group">
+                  <label for="contactEmail"
+                    >Email address <span class="required-mark">*</span></label
+                  ><input
+                    id="contactEmail"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    required
+                    aria-describedby="contactEmailError"
+                  /><small class="field-error" id="contactEmailError"></small>
+                </div>
+                <div class="field-group full-field">
+                  <label for="contactType"
+                    >Enquiry type <span class="required-mark">*</span></label
+                  ><select
+                    id="contactType"
+                    name="enquiryType"
+                    required
+                    aria-describedby="contactTypeError"
+                  >
+                    <option value="">Choose an enquiry type</option>
+                    <option>General enquiry</option>
+                    <option>Technical issue</option>
+                    <option>Calculation feedback</option>
+                    <option>Feature suggestion</option>
+                    <option>Battery data correction</option>
+                    <option>Partnership or education</option>
+                    <option>Other</option></select
+                  ><small class="field-error" id="contactTypeError"></small>
+                </div>
+                <div class="field-group full-field">
+                  <label for="contactSubject"
+                    >Subject <span class="required-mark">*</span></label
+                  ><input
+                    id="contactSubject"
+                    name="subject"
+                    type="text"
+                    required
+                    aria-describedby="contactSubjectError"
+                  /><small class="field-error" id="contactSubjectError"></small>
+                </div>
+                <div class="field-group full-field">
+                  <label for="contactMessage"
+                    >Message <span class="required-mark">*</span></label
+                  ><textarea
+                    id="contactMessage"
+                    name="message"
+                    rows="6"
+                    required
+                    aria-describedby="contactMessageError"
+                  ></textarea
+                  ><small class="field-error" id="contactMessageError"></small>
+                </div>
+              </div>
+              <div class="contact-honeypot" aria-hidden="true">
+                <label for="contactBotField">Leave this field empty</label
+                ><input
+                  id="contactBotField"
+                  name="bot-field"
+                  type="text"
+                  tabindex="-1"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="contact-submit-row">
+                <button class="primary-button" id="contactSubmit" type="submit">
+                  Send enquiry <span>→</span>
+                </button>
+                <p class="required-note">* Required</p>
+              </div>
+              <p
+                class="contact-status"
+                id="contactStatus"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </form>
+            <aside class="content-card contact-aside">
+              <span class="placeholder-icon contact-aside-icon"
+                ><i class="fas fa-comment-dots" aria-hidden="true"></i
+              ></span>
+              <h2>Contact the project team</h2>
+              <p>
+                Use the form for general questions, technical issues,
+                calculation feedback, feature ideas, or corrections to battery
+                data.
+              </p>
+              <div class="contact-availability" id="contactEndpointNote">
+                EmailJS sends form enquiries to damexcodeyoruba@gmail.com once
+                the service is configured. You can also email the project
+                directly.
+              </div>
+              <p class="small-note">
+                Project contact: Okunlola Damilola, creator of Know Your
+                Battery, based in Nigeria.
+              </p>
+              <p class="small-note">
+                Email:
+                <a class="inline-link" href="mailto:damexcodeyoruba@gmail.com"
+                  >damexcodeyoruba@gmail.com</a
+                >
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="page info-page" data-page-content="help">
+          <div class="page-intro">
+            <p class="eyebrow">HELP & FAQ</p>
+            <h1>How Know Your Battery works</h1>
+            <p class="muted lead">
+              Answers about the current tools, their assumptions, and features
+              still being planned.
+            </p>
+          </div>
+          <div class="faq-list">
+            <details class="content-card faq-item">
+              <summary>What is Know Your Battery?</summary>
+              <p>
+                A small engineering toolkit for exploring nominal battery-pack
+                calculations and an illustrative 3D pack layout. Other tools
+                shown as “Coming next” are placeholders for planned features.
+              </p>
+            </details>
+            <details class="content-card faq-item">
+              <summary>How do series and parallel connections work?</summary>
+              <p>
+                In a series string, each cell’s positive terminal connects to
+                the next cell’s negative terminal. Series cell voltages add; the
+                string capacity in amp-hours remains the capacity of one cell.
+                Parallel groups connect like polarities together (positive to
+                positive and negative to negative); parallel capacity adds while
+                nominal voltage stays the same. Real pack wiring must follow the
+                cell and protection-system specifications.
+              </p>
+            </details>
+            <details class="content-card faq-item">
+              <summary>
+                What is the difference between voltage, capacity, and energy?
+              </summary>
+              <p>
+                Voltage is electrical potential, measured here in volts (V).
+                Capacity is charge storage, shown in amp-hours (Ah). Energy is
+                the product of nominal voltage and capacity, shown in watt-hours
+                (Wh). The calculator uses Wh = nominal pack voltage × pack
+                capacity.
+              </p>
+            </details>
+            <details class="content-card faq-item">
+              <summary>How are runtime estimates calculated?</summary>
+              <p>
+                This version does not calculate runtime. Runtime depends on
+                usable capacity, load profile, voltage behavior, efficiency,
+                temperature, age, and other factors; a simple
+                capacity-divided-by-current result would only be a rough
+                estimate under stated assumptions.
+              </p>
+            </details>
+            <details class="content-card faq-item">
+              <summary>What does “Cannot verify” mean?</summary>
+              <p>
+                The current app does not provide a general automated “Cannot
+                verify” status. It also does not check user-entered
+                specifications against manufacturer sources. Treat missing or
+                unconfirmed information as unknown; do not assume a value has
+                been verified.
+              </p>
+            </details>
+            <details class="content-card faq-item">
+              <summary>Can I save and export my battery projects?</summary>
+              <p>
+                You can save up to five recent calculations in this browser.
+                They are stored on this device and remain after a page refresh,
+                but they are not synced across browsers or devices. Clearing
+                this site’s browser data may remove them. The My Projects &
+                Reports screen is marked “Coming next”; project saving and
+                export are not currently available.
+              </p>
+            </details>
+            <details class="content-card faq-item">
+              <summary>
+                Does a calculated battery design guarantee safety?
+              </summary>
+              <p>
+                No. These results are nominal estimates and the 3D model is
+                illustrative. A calculation does not certify a pack as safe or
+                ready to build. Review manufacturer specifications, protection
+                requirements, applicable standards, and the complete design with
+                a qualified engineer where needed.
+              </p>
+            </details>
+            <details class="content-card faq-item">
+              <summary>
+                Which battery specifications do I need before starting?
+              </summary>
+              <p>
+                For the current calculator, use a cell’s nominal voltage, rated
+                capacity, chemistry reference, and the intended series and
+                parallel counts. The 3D builder also accepts load current for a
+                nominal power estimate. Check datasheets for operating voltage
+                limits, current limits, charging requirements, temperature
+                limits, and protection guidance before real-world use.
+              </p>
+            </details>
+          </div>
+        </section>
+
+        <section class="page info-page" data-page-content="privacy">
+          <div class="page-intro">
+            <p class="eyebrow">PRIVACY</p>
+            <h1>Privacy Policy</h1>
+            <p class="muted lead">
+              This policy explains how Know Your Battery handles information
+              when you use the website and its tools.
+            </p>
+          </div>
+          <article class="content-card legal-copy">
+            <p class="legal-updated">Last updated: 27 October 2026.</p>
+            <section class="legal-section">
+              <h2>Who operates the website</h2>
+              <p>
+                Know Your Battery is operated by Okunlola Damilola, a developer
+                based in Nigeria. For privacy questions or requests, email
+                <a class="inline-link" href="mailto:damexcodeyoruba@gmail.com"
+                  >damexcodeyoruba@gmail.com</a
+                >.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Information handled by the website</h2>
+              <p>
+                You do not need an account to use the current website.
+                Calculator inputs remain in the open page's memory unless you
+                save a calculation. The theme preference is saved in this
+                browser's local storage. Up to five saved calculations are
+                stored in this browser's IndexedDB on this device. These items
+                are not synced to an account or server. Clearing this site's
+                browser data may remove them.
+              </p>
+              <p>
+                If you submit the contact form, it collects your name, email
+                address, enquiry type, subject, and message. The form sends
+                those fields through EmailJS to the project inbox at
+                <a class="inline-link" href="mailto:damexcodeyoruba@gmail.com"
+                  >damexcodeyoruba@gmail.com</a
+                >. EmailJS processes the submission to provide email delivery
+                and may process technical request information under its
+                <a
+                  class="inline-link"
+                  href="https://www.emailjs.com/legal/privacy-policy/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Privacy Policy</a
+                >. Google also handles the delivered email under its applicable
+                terms and privacy notices. Do not include passwords, payment
+                details, or other sensitive information in a message.
+              </p>
+              <p>
+                If you use the email link instead of the form, your email
+                application and provider handle the message you choose to send.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Hosting, service providers, and external resources</h2>
+              <p>
+                The site is planned for hosting at
+                <a
+                  class="inline-link"
+                  href="https://knowyourbattery.netlify.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >knowyourbattery.netlify.app</a
+                >. Netlify may process technical information such as IP address,
+                browser and device details, and request data to deliver,
+                operate, and protect the hosted site. See the
+                <a
+                  class="inline-link"
+                  href="https://www.netlify.com/privacy/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Netlify Privacy Statement</a
+                >. The site code does not include a separate analytics script;
+                any optional Netlify analytics or other integrations enabled in
+                the Netlify account should be reflected in this policy. EmailJS
+                processes contact form submissions as described above.
+              </p>
+              <p>
+                The website loads fonts from Google Fonts, Font Awesome and
+                Three.js files from cdnjs, and OrbitControls from jsDelivr. When
+                your browser requests these resources, the relevant providers
+                may receive connection information such as your IP address,
+                browser type, and the requested file. Those providers' own
+                privacy terms apply to their services.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Cookies, analytics, and technical logs</h2>
+              <p>
+                The website code stores the theme preference in local storage
+                and saved calculations in IndexedDB. It does not set its own
+                cookies or include a separate analytics script. Netlify and
+                external resource providers may process technical information
+                when delivering their services. Any optional analytics, cookies,
+                or other integrations enabled in the Netlify account must also
+                be described here; consult the linked provider privacy notices
+                for their practices.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Storage, retention, and security</h2>
+              <p>
+                Theme preferences and saved calculations remain in this browser
+                until you clear the site's browser data. This application does
+                not keep a server-side contact message database; EmailJS
+                processes form submissions for delivery, and delivered messages
+                are held in the recipient's Gmail account according to that
+                account's settings. EmailJS and Google handle data under their
+                own service practices and privacy notices. No internet
+                transmission or storage method can be guaranteed completely
+                secure.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Your choices and privacy requests</h2>
+              <p>
+                You can clear this site's local browser data to remove the theme
+                preference and saved calculations. You can choose not to submit
+                the contact form. For a request about information sent through
+                the form, contact
+                <a class="inline-link" href="mailto:damexcodeyoruba@gmail.com"
+                  >damexcodeyoruba@gmail.com</a
+                >. Rights available to you depend on applicable privacy law; you
+                may contact the relevant data-protection authority if you have
+                an unresolved concern.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Changes to this policy</h2>
+              <p>
+                This policy may be updated as the website or its services
+                change. The latest version will be posted on this page with an
+                updated revision date.
+              </p>
+            </section>
+          </article>
+        </section>
+
+        <section class="page info-page" data-page-content="terms">
+          <div class="page-intro">
+            <p class="eyebrow">TERMS</p>
+            <h1>Terms of Use</h1>
+            <p class="muted lead">
+              These terms explain the conditions for using Know Your Battery.
+            </p>
+          </div>
+          <article class="content-card legal-copy">
+            <p class="legal-updated">
+              Last updated: 26 October 2026. These terms apply from the date
+              they are published on the website.
+            </p>
+            <section class="legal-section">
+              <h2>Who provides the service</h2>
+              <p>
+                Know Your Battery is operated by Okunlola Damilola, a developer
+                based in Nigeria. Questions about these terms can be sent to
+                <a class="inline-link" href="mailto:damexcodeyoruba@gmail.com"
+                  >damexcodeyoruba@gmail.com</a
+                >.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Acceptable use</h2>
+              <p>
+                Use the website lawfully and do not interfere with its normal
+                operation, attempt unauthorized access, introduce malicious
+                code, or use it to infringe another person's rights. We may
+                restrict access where reasonably necessary to protect the
+                website, its users, or its services.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>User-supplied battery data</h2>
+              <p>
+                You are responsible for the values and configuration details you
+                enter. Check that information against reliable manufacturer
+                documentation before relying on it. Do not submit confidential
+                or sensitive information through the contact form.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Accuracy and limitations of calculations</h2>
+              <p>
+                Calculations use the inputs, formulas, and assumptions shown by
+                the website. Results are estimates and may differ from
+                real-world behavior. The tools do not verify user inputs against
+                manufacturer records or certify a battery design as safe or
+                ready to build. Read the Engineering Disclaimer and follow
+                manufacturer specifications and applicable requirements.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Third-party sources and datasheets</h2>
+              <p>
+                Manufacturer specifications and external reference materials are
+                provided by their respective publishers. Their content remains
+                subject to the publishers' terms and intellectual property
+                rights. Check the source and revision date before relying on a
+                datasheet or reproducing its material.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Intellectual property</h2>
+              <p>
+                Know Your Battery owns or has permission to use its original
+                website content, design, and software, except for third-party
+                materials and software that remain subject to their owners'
+                rights and applicable licenses. You may use the website for
+                personal and educational purposes. You may not copy or
+                redistribute protected material without permission or a license
+                that allows it.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Service availability and changes</h2>
+              <p>
+                The website may be updated, changed, interrupted, or
+                discontinued as needed. We aim to keep it available but do not
+                promise uninterrupted access or a particular response time.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Governing law</h2>
+              <p>
+                These terms are governed by the laws of the Federal Republic of
+                Nigeria. Disputes relating to these terms are subject to the
+                jurisdiction of the competent courts in Nigeria. Nothing in
+                these terms removes rights that cannot lawfully be excluded.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Contact</h2>
+              <p>
+                For questions about these terms, contact Okunlola Damilola at
+                <a class="inline-link" href="mailto:damexcodeyoruba@gmail.com"
+                  >damexcodeyoruba@gmail.com</a
+                >.
+              </p>
+            </section>
+          </article>
+        </section>
+
+        <section class="page info-page" data-page-content="disclaimer">
+          <div class="page-intro">
+            <p class="eyebrow">ENGINEERING LIMITATIONS</p>
+            <h1>Engineering Disclaimer</h1>
+            <p class="muted lead">
+              Read the limits of the estimates before applying them to a real
+              battery design.
+            </p>
+          </div>
+          <article class="content-card legal-copy disclaimer-copy">
+            <p class="disclaimer-lead">
+              Know Your Battery is an educational calculation and visualization
+              tool. Its outputs are estimates and are not a certification,
+              safety assessment, or build approval.
+            </p>
+            <section class="legal-section">
+              <h2>Inputs and estimates</h2>
+              <p>
+                Calculations depend on the accuracy and completeness of the
+                values entered. Runtime, charge-time, energy, power, and other
+                estimates can differ from real-world results as cells, loads,
+                temperatures, efficiencies, and operating conditions vary.
+                Runtime and charge-time calculators are not implemented in the
+                current version.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Specifications and missing information</h2>
+              <p>
+                Respect each battery chemistry’s operating limits and the
+                manufacturer’s specifications for voltage, current, charging,
+                temperature, and protection. The app does not validate inputs
+                against datasheets. If data is missing or cannot be confirmed,
+                that check cannot be verified; do not treat an unknown value as
+                a verified specification.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Not a safety certification</h2>
+              <p>
+                A successful calculation does not certify that a battery pack is
+                safe, compatible, or ready to build. The 3D pack view is
+                illustrative and its wires are not a validated physical wiring
+                plan.
+              </p>
+            </section>
+            <section class="legal-section">
+              <h2>Review before building</h2>
+              <p>
+                Real-world designs may require review by a qualified engineer,
+                suitable cell monitoring and protection systems, correctly rated
+                components, and compliance with applicable standards and
+                regulations. Check authoritative manufacturer documentation and
+                obtain appropriate review for the intended application.
+              </p>
+            </section>
+          </article>
+          <p class="disclaimer-backlink">
+            <a href="#calculator" data-page="calculator" class="inline-link"
+              >Return to the Battery Calculator →</a
+            ><a href="#builder" data-page="builder" class="inline-link"
+              >Open the 3D Pack Builder →</a
+            >
+          </p>
+        </section>
+
+        <footer class="site-footer">
+          <nav class="site-footer-links" aria-label="About and support">
+            <a href="#about" data-page="about">About</a
+            ><a href="#contact" data-page="contact">Contact</a
+            ><a href="#help" data-page="help">Help / FAQ</a
+            ><a href="#privacy" data-page="privacy">Privacy Policy</a
+            ><a href="#terms" data-page="terms">Terms of Use</a
+            ><a href="#disclaimer" data-page="disclaimer"
+              >Engineering Disclaimer</a
+            >
+          </nav>
+          <div class="site-footer-bottom">
+            <span>© <span id="copyrightYear"></span> Know Your Battery</span
+            ><span>Educational engineering tools and references</span>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+  </body>
+</html>
