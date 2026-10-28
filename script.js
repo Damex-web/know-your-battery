@@ -100,8 +100,7 @@ function setupThemeToggle() {
     applyTheme(nextTheme);
     try {
       window.localStorage.setItem("know-your-battery-theme", nextTheme);
-    } catch (error) {
-    }
+    } catch (error) {}
   });
 }
 
